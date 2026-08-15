@@ -24,18 +24,83 @@ function renderHome() {
     { name: "Cat-eye", image: "products/isolde.jpg", note: "Lifted, considered" },
     { name: "Sport", image: "products/apex.jpg", note: "Built for glare" },
   ];
+  const slides = [
+    {
+      image: "products/hero-1.jpg",
+      kicker: "Spring / Summer",
+      title: "Light, framed.",
+      text: "New coastal frames for long afternoons and open water. Cut in small batches.",
+      cta: "Shop the collection",
+      href: "shop.html",
+    },
+    {
+      image: "products/hero-2.jpg",
+      kicker: "City edit",
+      title: "Worn every day.",
+      text: "Quiet black acetate. The pair you reach for without thinking.",
+      cta: "Shop wayfarers",
+      href: "shop.html?shape=Wayfarer",
+    },
+    {
+      image: "products/hero-3.jpg",
+      kicker: "For her",
+      title: "A lifted line.",
+      text: "Cat-eye frames with olive lenses — vintage glamour, none of the costume.",
+      cta: "Shop cat-eye",
+      href: "shop.html?shape=Cat-eye",
+    },
+    {
+      image: "products/hero-4.jpg",
+      kicker: "Made to travel",
+      title: "Take the long way.",
+      text: "Lenses mixed for real daylight. Frames that last more than one summer.",
+      cta: "Explore all frames",
+      href: "shop.html",
+    },
+  ];
   document.getElementById("page").innerHTML = `
-    <section class="hero">
-      <img src="${Store.img("products/hero.jpg")}" alt="">
+    <section class="hero" id="hero">
+      <div class="hero-slides">
+        ${slides
+          .map(
+            (s, i) => `<div class="hero-slide ${i === 0 ? "is-active" : ""}">
+              <img src="${Store.img(s.image)}" alt="${s.title}">
+            </div>`
+          )
+          .join("")}
+      </div>
       <div class="wrap hero-inner">
-        <p class="eyebrow" style="color:rgba(251,250,247,.8)">Spring / Summer</p>
-        <h1>Light, framed.</h1>
-        <p>Premium sunglasses cut for sun, travel, and the hours in between. Designed in small batches.</p>
-        <div class="hero-actions">
-          <a class="btn" style="background:var(--paper);color:var(--ink);border-color:var(--paper)" href="shop.html">Shop the collection</a>
-          <a class="btn btn-ghost" href="about.html">Our story</a>
+        <div class="hero-copy-wrap">
+          ${slides
+            .map(
+              (s, i) => `<div class="hero-copy ${i === 0 ? "is-active" : ""}">
+                <p class="eyebrow" style="color:rgba(251,250,247,.8)">${s.kicker}</p>
+                <h1>${s.title}</h1>
+                <p>${s.text}</p>
+                <div class="hero-actions">
+                  <a class="btn" style="background:var(--paper);color:var(--ink);border-color:var(--paper)" href="${s.href}">${s.cta}</a>
+                  <a class="btn btn-ghost" href="about.html">Our story</a>
+                </div>
+              </div>`
+            )
+            .join("")}
         </div>
       </div>
+      <button class="hero-nav prev" type="button" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="hero-nav next" type="button" aria-label="Next slide">
+        <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <div class="hero-dots">
+        ${slides.map((_, i) => `<button class="hero-dot ${i === 0 ? "is-active" : ""}" type="button" data-slide="${i}" aria-label="Go to slide ${i + 1}"></button>`).join("")}
+      </div>
+    </section>
+    <section class="benefits">
+      <div class="benefit"><h3>UV400</h3><p>Full-spectrum sun protection in every pair.</p></div>
+      <div class="benefit"><h3>Free shipping</h3><p>On orders over $150, worldwide.</p></div>
+      <div class="benefit"><h3>30-day returns</h3><p>Try them in real daylight. Send them back if not.</p></div>
+      <div class="benefit"><h3>Small batches</h3><p>Short runs. Tight hinges. Honest acetate.</p></div>
     </section>
     <section class="section wrap">
       <div class="section-head">
@@ -43,6 +108,28 @@ function renderHome() {
         <a href="shop.html" class="muted" style="font-size:12px;letter-spacing:.16em;text-transform:uppercase">View all</a>
       </div>
       <div class="grid-4">${featured.map((p) => UI.productCard(p)).join("")}</div>
+    </section>
+    <section class="wrap section" style="padding-top:0">
+      <div class="duo">
+        <a class="duo-card" href="shop.html?gender=Women">
+          <img src="${Store.img("products/hero-3.jpg")}" alt="Women">
+          <span></span>
+          <div>
+            <p class="eyebrow" style="color:rgba(251,250,247,.8)">The edit</p>
+            <h3>For her</h3>
+            <p>Cat-eye, pearl, and wine acetate.</p>
+          </div>
+        </a>
+        <a class="duo-card" href="shop.html?gender=Men">
+          <img src="${Store.img("products/hero-2.jpg")}" alt="Men">
+          <span></span>
+          <div>
+            <p class="eyebrow" style="color:rgba(251,250,247,.8)">The edit</p>
+            <h3>For him</h3>
+            <p>Pilots, sport wraps, and everyday black.</p>
+          </div>
+        </a>
+      </div>
     </section>
     <section style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
       <div class="wrap section">
@@ -60,6 +147,13 @@ function renderHome() {
         </div>
       </div>
     </section>
+    <section class="section wrap">
+      <div class="section-head">
+        <div><p class="eyebrow">Just in</p><h2>New arrivals</h2></div>
+        <a href="shop.html?sort=new" class="muted" style="font-size:12px;letter-spacing:.16em;text-transform:uppercase">See more</a>
+      </div>
+      <div class="grid-4">${Store.products.filter((p) => !p.featured).slice(0, 4).map((p) => UI.productCard(p)).join("")}</div>
+    </section>
     <section class="wrap split section">
       <img src="${Store.img("products/dune.jpg")}" alt="">
       <div>
@@ -69,13 +163,157 @@ function renderHome() {
         <a href="about.html" style="display:inline-block;margin-top:24px;font-size:12px;letter-spacing:.16em;text-transform:uppercase">Read the story</a>
       </div>
     </section>
+    <section style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+      <div class="wrap section">
+        <p class="eyebrow">The craft</p>
+        <h2 class="page-title">How a pair is made</h2>
+        <div class="steps" style="margin-top:40px">
+          <div><p class="step-num">01</p><h3 class="display" style="font-size:28px;margin:8px 0">Acetate & metal</h3><p class="muted">Italian acetate and stainless steel, chosen for weight first — then color.</p></div>
+          <div><p class="step-num">02</p><h3 class="display" style="font-size:28px;margin:8px 0">Lens mix</h3><p class="muted">UV400 tints mixed for real daylight, not the photo studio. Polarized where glare matters.</p></div>
+          <div><p class="step-num">03</p><h3 class="display" style="font-size:28px;margin:8px 0">Hand finish</h3><p class="muted">Hinges seated, temples warmed, and each pair checked on a face — not just a form.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section wrap">
+      <div class="section-head">
+        <div><p class="eyebrow">Journal</p><h2>From the studio</h2></div>
+      </div>
+      <div class="journal">
+        <article>
+          <img src="${Store.img("products/hero-1.jpg")}" alt="">
+          <div>
+            <p class="eyebrow">Notes</p>
+            <h3>Why gradient lenses feel kinder at dusk</h3>
+            <p class="muted">A short note on warmth, contrast, and driving home.</p>
+          </div>
+        </article>
+        <article>
+          <img src="${Store.img("products/isolde.jpg")}" alt="">
+          <div>
+            <p class="eyebrow">Fit</p>
+            <h3>How to know a cat-eye will sit right</h3>
+            <p class="muted">Cheekbones, temple length, and the two-finger test.</p>
+          </div>
+        </article>
+        <article>
+          <img src="${Store.img("products/hero-4.jpg")}" alt="">
+          <div>
+            <p class="eyebrow">Travel</p>
+            <h3>Packing one pair for a week of sun</h3>
+            <p class="muted">What we take when the bag has to stay light.</p>
+          </div>
+        </article>
+      </div>
+    </section>
     <section class="quotes">
       <div class="wrap">
         <blockquote>“The Solstice aviators feel like they were made for my face. Quiet luxury, finally.”<footer>Amelia R.</footer></blockquote>
         <blockquote>“Packaging was beautiful, lenses are crystal. I bought a second pair the same week.”<footer>James K.</footer></blockquote>
         <blockquote>“Isolde is the only cat-eye I’ve worn that doesn’t feel like a costume.”<footer>Sofia M.</footer></blockquote>
       </div>
+    </section>
+    <section class="section wrap">
+      <p class="eyebrow center">On film</p>
+      <h2 class="page-title center">The lookbook</h2>
+      <div class="mosaic" style="margin-top:32px">
+        ${["solstice", "noir", "luna", "isolde", "apex", "eclipse"]
+          .map((id) => {
+            const p = Store.products.find((x) => x.image.includes(id));
+            const href = p ? "product.html?slug=" + p.slug : "shop.html";
+            return `<a href="${href}"><img src="${Store.img("products/" + id + ".jpg")}" alt=""></a>`;
+          })
+          .join("")}
+      </div>
+    </section>
+    <section class="newsletter">
+      <div class="wrap">
+        <div>
+          <p class="eyebrow" style="color:rgba(251,250,247,.65)">The list</p>
+          <h2>New frames, first.</h2>
+          <p style="color:rgba(251,250,247,.7);max-width:420px;line-height:1.7">A short note when we release a pair. No seasonal noise.</p>
+        </div>
+        <form class="news-form" id="news-form">
+          <input type="email" required placeholder="Your email" aria-label="Email">
+          <button class="btn" type="submit" style="background:var(--paper);color:var(--ink);border-color:var(--paper)">Join</button>
+        </form>
+      </div>
+    </section>
+    <section class="section wrap">
+      <p class="eyebrow center">Questions</p>
+      <h2 class="page-title center">Before you order</h2>
+      <div class="faq" style="margin-top:28px">
+        <details open><summary>Do you ship internationally?</summary><p>Yes. Free over $150, otherwise a flat $12. Duties may apply depending on where you live.</p></details>
+        <details><summary>Are the lenses polarized?</summary><p>Aviators, sport, and oversized styles are polarized. Others are UV400 with a tint mixed for daylight.</p></details>
+        <details><summary>What if they don’t fit?</summary><p>Return them within 30 days, unworn with the case. We’ll refund or exchange.</p></details>
+        <details><summary>Is checkout a real payment?</summary><p>This is a demo store. Use 4242 4242 4242 4242 — nothing is charged.</p></details>
+      </div>
     </section>`;
+  initHeroSlider();
+  const news = document.getElementById("news-form");
+  if (news) {
+    news.onsubmit = (e) => {
+      e.preventDefault();
+      UI.toast("You're on the list.");
+      e.target.reset();
+    };
+  }
+}
+
+function initHeroSlider() {
+  const root = document.getElementById("hero");
+  if (!root) return;
+  const slides = [...root.querySelectorAll(".hero-slide")];
+  const copies = [...root.querySelectorAll(".hero-copy")];
+  const dots = [...root.querySelectorAll(".hero-dot")];
+  if (!slides.length) return;
+  let index = 0;
+  let timer = null;
+
+  const show = (next) => {
+    index = (next + slides.length) % slides.length;
+    slides.forEach((el, i) => el.classList.toggle("is-active", i === index));
+    copies.forEach((el, i) => el.classList.toggle("is-active", i === index));
+    dots.forEach((el, i) => el.classList.toggle("is-active", i === index));
+  };
+
+  const play = () => {
+    stop();
+    timer = setInterval(() => show(index + 1), 5500);
+  };
+  const stop = () => {
+    if (timer) clearInterval(timer);
+    timer = null;
+  };
+
+  root.querySelector(".hero-nav.next").onclick = () => {
+    show(index + 1);
+    play();
+  };
+  root.querySelector(".hero-nav.prev").onclick = () => {
+    show(index - 1);
+    play();
+  };
+  dots.forEach((dot) => {
+    dot.onclick = () => {
+      show(Number(dot.dataset.slide));
+      play();
+    };
+  });
+
+  let startX = 0;
+  root.addEventListener("touchstart", (e) => {
+    startX = e.changedTouches[0].clientX;
+    stop();
+  }, { passive: true });
+  root.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) show(index + (dx < 0 ? 1 : -1));
+    play();
+  }, { passive: true });
+
+  root.addEventListener("mouseenter", stop);
+  root.addEventListener("mouseleave", play);
+  play();
 }
 
 function renderShop() {
